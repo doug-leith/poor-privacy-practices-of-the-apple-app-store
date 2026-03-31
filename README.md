@@ -2,6 +2,8 @@
 
 Files:
 
+- `appleappstore.pdf`
+    - Report discussing measurements setup and results.
 - `cookies_minimal_17feb2026.txt.zip`
     - The decrypted/decoded network connections for Experiment Part 1 (location off, not logged in)
 - `cookies_minimal_17feb2026_locationon.txt.zip`
