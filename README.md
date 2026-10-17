@@ -15,7 +15,7 @@ Files:
 - In folder addon_ios:  
     - `File `ios_decoding_helpers.py` is mitmdump addon used to decode data sent/received in Apple network connections.  Usage: mitmdump -nr <mitm_data_file> -s addon_ios/ios_decoding_helpers.py
 - In folder ssl-kill-switch3-DL:  
-    - Objective-C tweak used to bypass SSL cert checks by Apple system processes.  This is based on https://github.com/NyaMisty/ssl-kill-switch3, with only file SSLKillSwitch2.plist changed to include extra system processes to hook.
+    - Objective-C tweak used to bypass SSL cert checks by Apple system processes.  This is based on https://github.com/NyaMisty/ssl-kill-switch3, with file SSLKillSwitch2.plist changed to include extra system processes to hook, and a small change to SSLKillSwitch/SSLKillSwitch.m so that apsd (Apple Push Notification service) still receives its server-trust challenge; without it apsd never completes its connection and push notifications stop working.
 
 ## Related Report
 

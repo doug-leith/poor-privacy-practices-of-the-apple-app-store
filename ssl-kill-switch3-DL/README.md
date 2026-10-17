@@ -1,6 +1,6 @@
 # SSL Kill Switch 3
 
-DL: SSLKillSwitch2.plist modified to include system processes.
+DL: SSLKillSwitch2.plist modified to include system processes. SSLKillSwitch.m modified so that in apsd the BoringSSL verify callback and stream-task challenges are passed through unchanged: apsd only connects to the APNs courier after its own NSURLSession delegate has seen the server-trust challenge, which the tweak otherwise suppresses. The tweak's SecTrust hooks still make apsd's check pass.
 
 Next Generation of iOS Tweak SSLKillSwitch (https://github.com/nabla-c0d3/ssl-kill-switch2) with much more functionality!
 

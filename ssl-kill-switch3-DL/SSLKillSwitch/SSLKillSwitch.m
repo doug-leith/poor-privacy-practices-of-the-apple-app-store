@@ -234,9 +234,16 @@ HOOKBODY({
 })
 
 
+// apsd waits for its own ServerTrust challenge (-[APSTCPStream URLSession:task:didReceiveChallenge:...])
+// before sending anything.  Replacing the verify callback suppresses that challenge, so in apsd
+// leave the callback alone and let stream-task challenges reach the delegate; the SecTrust* hooks
+// below still make apsd's own trust check pass.
+static BOOL g_passthrough = NO;
+
 static void (*original_SSL_CTX_set_custom_verify)(void *ctx, int mode, int (*callback)(void *ssl, uint8_t *out_alert));
 static void replaced_SSL_CTX_set_custom_verify(void *ctx, int mode, int (*callback)(void *ssl, uint8_t *out_alert))
 HOOKBODY({
+    if (g_passthrough) { original_SSL_CTX_set_custom_verify(ctx, mode, callback); return; }
     original_SSL_CTX_set_custom_verify(ctx, SSL_VERIFY_NONE, custom_verify_callback_that_does_not_validate);
     return;
 })
@@ -245,6 +252,7 @@ HOOKBODY({
 static void (*original_SSL_set_custom_verify)(void *ssl, int mode, int (*callback)(void *ssl, uint8_t *out_alert));
 static void replaced_SSL_set_custom_verify(void *ssl, int mode, int (*callback)(void *ssl, uint8_t *out_alert))
 HOOKBODY({
+    if (g_passthrough) { original_SSL_set_custom_verify(ssl, mode, callback); return; }
     original_SSL_set_custom_verify(ssl, SSL_VERIFY_NONE, custom_verify_callback_that_does_not_validate);
     return;
 })
@@ -416,6 +424,7 @@ static BOOL (*old__NSCFTCPIOStreamTask__onqueue_sendSessionChallenge)(id self, S
 static BOOL new__NSCFTCPIOStreamTask__onqueue_sendSessionChallenge(id self, SEL _cmd, id challenge, void (^completion)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential) ) 
 HOOKBODY({
 	SSKVerboseLog("__NSCFTCPIOStreamTask _onqueue_sendSessionChallenge! protectionSpace: %{public}@", [challenge protectionSpace]);
+	if (g_passthrough) return old__NSCFTCPIOStreamTask__onqueue_sendSessionChallenge(self, _cmd, challenge, completion);
 	checkChallengeAndOverride(challenge, completion);
 	return YES;
 	// return %orig;
@@ -584,6 +593,7 @@ __attribute__((constructor)) static void init(int argc, const char **argv)
     if (shouldHookFromPreference())
     {
         SSKInfoLog("Hook enabled.");
+        g_passthrough = !strcmp(getprogname(), "apsd");
 
         NSProcessInfo *processInfo = [NSProcessInfo processInfo];
         if ([processInfo isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){12, 0, 0}])
