@@ -19,5 +19,5 @@ Files:
 
 ## Related Report
 
-- `iphone_identifiers.pdf`
+- [iphone_identifiers.pdf](iphone_identifiers.pdf)
     - D.J. Leith, "Device And User Identifiers In iPhone Network Traffic: Activation, Attestation And Anisette", Trinity College Dublin, 17 October 2026. Traces the device and user identifiers that an iPhone sends to Apple back to their origin, using the same handset and measurement setup as the App Store report.
