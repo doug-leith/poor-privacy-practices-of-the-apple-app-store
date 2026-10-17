@@ -17,4 +17,7 @@ Files:
 - In folder ssl-kill-switch3-DL:  
     - Objective-C tweak used to bypass SSL cert checks by Apple system processes.  This is based on https://github.com/NyaMisty/ssl-kill-switch3, with only file SSLKillSwitch2.plist changed to include extra system processes to hook.
 
+## Related Report
 
+- `iphone_identifiers.pdf`
+    - D.J. Leith, "Device And User Identifiers In iPhone Network Traffic: Activation, Attestation And Anisette", Trinity College Dublin, 17 October 2026. Traces the device and user identifiers that an iPhone sends to Apple back to their origin, using the same handset and measurement setup as the App Store report.
